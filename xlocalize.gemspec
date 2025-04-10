@@ -19,14 +19,16 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_runtime_dependency 'nokogiri', '~> 1.8.2'
+  spec.add_runtime_dependency 'nokogiri', '~> 1.18'
   spec.add_runtime_dependency 'commander', '~> 4.4'
   spec.add_runtime_dependency 'colorize', '~> 0.8'
   spec.add_runtime_dependency 'multipart-post', '~> 2.0'
   spec.add_runtime_dependency 'plist', '~> 3.2'
   spec.add_runtime_dependency 'apfel'
+  spec.add_runtime_dependency 'abbrev'
 
-  spec.add_development_dependency 'bundler', '~> 1.10'
+  spec.add_development_dependency 'bundler', '~> 2.4'
+  spec.add_development_dependency 'rake', '~> 13.0'
   spec.add_development_dependency 'rspec', '~> 3.5'
   spec.add_development_dependency 'simplecov', '~> 0.13'
   spec.add_development_dependency 'codeclimate-test-reporter', '~> 1.0'
