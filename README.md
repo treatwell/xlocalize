@@ -1,5 +1,4 @@
 [![CI](https://github.com/treatwell/xlocalize/actions/workflows/ci.yml/badge.svg)](https://github.com/treatwell/xlocalize/actions/workflows/ci.yml)
-[![Gem Version](https://badge.fury.io/rb/xlocalize.svg)](https://badge.fury.io/rb/xlocalize)
 
 # Xlocalize
 
