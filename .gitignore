@@ -8,6 +8,8 @@
 /pkg/
 /spec/reports/
 /tmp/
+/vendor/
+*.xcloc/
 
 # iOS specific ignores, used in sample projects inside the repo
 *.pbxuser

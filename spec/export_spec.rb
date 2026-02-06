@@ -55,16 +55,20 @@ describe Xlocalize::Executor do
           @push_plurals_file = plurals_file
         end
         def pull(locale)
-          { 'xliff' => Nokogiri::XML(open("en.xliff")).to_xml }
+          fname = Xlocalize::Helper.xcode_at_least?(10) ? "#{locale}.xcloc/Localized Contents/#{locale}.xliff" : "#{locale}.xliff"
+          { 'xliff' => Nokogiri::XML(File.open(fname)).to_xml }
         end
       end
+
+      xliff_name = Xlocalize::Helper.xcode_at_least?(10) ? "en.xcloc/Localized Contents/en.xliff" : "en.xliff"
+      plurals_name = "#{xliff_name}_plurals.yml"
 
       wti = WebtranslateItMock.new
       fixture_path = 'spec/fixtures/ImportExportExample/'
       Xlocalize::Executor.new.export_master(wti, fixture_path << '/ImportExportExample.xcodeproj', ['ImportExportExample'], '##', 'en', false)
 
       it 'should create a YAML file for plurals in project' do
-        plurals_yml = YAML.load_file('en.xliff_plurals.yml')
+        plurals_yml = YAML.load_file(plurals_name)
         expected_yml = {
           'en' => {
             'ImportExportExample/en.lproj/and_plurals.stringsdict' => {
@@ -79,15 +83,15 @@ describe Xlocalize::Executor do
       end
 
       it 'should pass correct xliff file for upload' do
-        expect(wti.push_xliff_file.path).to eq(File.open('en.xliff', 'r') { |f| f.path })
+        expect(wti.push_xliff_file.path).to eq(File.open(xliff_name, 'r') { |f| f.path })
       end
 
       it 'should pass correct plurals file for upload' do
-        expect(wti.push_plurals_file.path).to eq(File.open('en.xliff_plurals.yml', 'r') { |f| f.path })
+        expect(wti.push_plurals_file.path).to eq(File.open(plurals_name, 'r') { |f| f.path })
       end
 
       it 'should have plurals filtered from xliff file' do
-        doc = Nokogiri::XML(open("en.xliff"))
+        doc = Nokogiri::XML(File.open(xliff_name))
         trans_units = doc.xpath("//xmlns:trans-unit").map { |node| node['id'] }
         expect(trans_units.include? 'users_count').to eq(false)
       end

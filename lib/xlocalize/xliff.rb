@@ -14,23 +14,31 @@ end
 module Xlocalize
   class ::Nokogiri::XML::Document
 
+    def xliff_xpath(path)
+      if self.namespaces.key?('xmlns')
+        self.xpath(path)
+      else
+        self.xpath(path.gsub('xmlns:', ''))
+      end
+    end
+
     def filter_not_target_files(targets)
       prefixes = targets.map { |t| "#{t}/" }
-      self.xpath("//xmlns:file").each { |node|
+      self.xliff_xpath("//xmlns:file").each { |node|
         fname = node["original"]
         node.remove if !fname.start_with_either?(prefixes) || !fname.include?(".lproj/")
       }
     end
 
     def filter_trans_units(prefix)
-      self.xpath("//xmlns:source").each { |node|
+      self.xliff_xpath("//xmlns:source").each { |node|
         node.parent.remove if node.content.start_with?(prefix)
       }
     end
 
     def filter_plurals(project)
       plurals = {}
-      self.xpath("//xmlns:file").each { |node|
+      self.xliff_xpath("//xmlns:file").each { |node|
         fname = node["original"]
         next if !fname.end_with?(".strings")
         fname_stringsdict = fname << 'dict'
@@ -51,14 +59,14 @@ module Xlocalize
     end
 
     def filter_empty_files
-      self.xpath("//xmlns:body").each { |node|
+      self.xliff_xpath("//xmlns:body").each { |node|
         node.parent.remove if node.elements.count == 0
       }
     end
 
     def filter_duplicate_storyboard_xib_files
-      all_files = self.xpath("//xmlns:file").map { |node| Pathname.new(node["original"]).split.last.to_s }
-      self.xpath("//xmlns:file").each do |node|
+      all_files = self.xliff_xpath("//xmlns:file").map { |node| Pathname.new(node["original"]).split.last.to_s }
+      self.xliff_xpath("//xmlns:file").each do |node|
         fname = Pathname.new(node["original"]).split.last.to_s
         if fname.end_with?(".strings")
           storyboard_fname = fname.sub(".strings", ".storyboard")
@@ -71,7 +79,7 @@ module Xlocalize
     end
 
     def unescape
-      self.xpath("//xmlns:source").each do |src|
+      self.xliff_xpath("//xmlns:source").each do |src|
         src.content = src.content
           .gsub('\\"', '"')
           .gsub('\\\\n', '\n')
@@ -82,7 +90,7 @@ module Xlocalize
       #original_doc = Nokogiri::XML(wti.pull(master_lang)['xliff'])
       original_xliff = original_doc.at_css('xliff')
       doc = self#Nokogiri::XML(File.open(master_file_name))
-      doc.xpath("//xmlns:file").each { |node|
+      doc.xliff_xpath("//xmlns:file").each { |node|
         fname = node["original"]
         original_file = original_doc.at_css('file[original="' << fname << '"] > body')
         if original_file then
@@ -102,7 +110,7 @@ module Xlocalize
     def cryptic_trans_units(exclude)
       file_units = {}
       cryptic_pattern = /[a-zA-Z0-9]{3}-[a-zA-Z0-9]{2}-[a-zA-Z0-9]{3}/
-      self.xpath("//xmlns:file").each do |node|
+      self.xliff_xpath("//xmlns:file").each do |node|
         fname = node["original"]
         all_units = node.css('body > trans-unit').map { |unit| unit['id'] }
         cryptic_units = all_units.select do |key|

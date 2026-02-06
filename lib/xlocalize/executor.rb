@@ -91,7 +91,7 @@ module Xlocalize
       puts "Filtering plurals" if $VERBOSE
       plurals = doc.filter_plurals(project)
       puts "Removing excluded translation units" if $VERBOSE
-      doc.xpath("//xmlns:trans-unit").each { |unit| unit.remove if exclude_units.include?(unit['id']) }
+      doc.xliff_xpath("//xmlns:trans-unit").each { |unit| unit.remove if exclude_units.include?(unit['id']) }
       puts "Removing all files having no trans-unit elements after removal" if $VERBOSE
       doc.filter_empty_files
       puts "Unescaping translation units" if $VERBOSE
@@ -170,7 +170,8 @@ module Xlocalize
 
     def import_xliff(fname)
       puts "Importing translations from #{fname}" if $VERBOSE
-      Nokogiri::XML(File.open(fname)).xpath("//xmlns:file").each do |node|
+      doc = Nokogiri::XML(File.open(fname))
+      doc.xliff_xpath("//xmlns:file").each do |node|
         tr_fname = node["original"]
         source_lang = node["source-language"]
         target_lang = node["target-language"]
