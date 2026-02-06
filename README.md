@@ -1,8 +1,5 @@
-[![Build Status](https://travis-ci.org/viktorasl/xlocalize.svg?branch=master)](https://travis-ci.org/viktorasl/xlocalize)
+[![CI](https://github.com/treatwell/xlocalize/actions/workflows/ci.yml/badge.svg)](https://github.com/treatwell/xlocalize/actions/workflows/ci.yml)
 [![Gem Version](https://badge.fury.io/rb/xlocalize.svg)](https://badge.fury.io/rb/xlocalize)
-[![Code Climate](https://codeclimate.com/github/viktorasl/xlocalize/badges/gpa.svg)](https://codeclimate.com/github/viktorasl/xlocalize)
-[![Test Coverage](https://codeclimate.com/github/viktorasl/xlocalize/badges/coverage.svg)](https://codeclimate.com/github/viktorasl/xlocalize/coverage)
-[![Inline docs](http://inch-ci.org/github/viktorasl/xlocalize.svg?branch=master)](http://inch-ci.org/github/viktorasl/xlocalize)
 
 # Xlocalize
 
